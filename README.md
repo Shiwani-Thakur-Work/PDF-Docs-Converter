@@ -7,8 +7,8 @@
 **High-Fidelity, Zero-Glitch, Privacy-First Document Conversion.**  
 Convert **PDF to DOCX** and **DOCX to PDF** with layout preservation, plus native PDF utilities (Compress, Merge, Split).
 
-[![Deploy to GitHub Pages](https://github.com/shiwa/PDF-Docs-Converter/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/shiwa/PDF-Docs-Converter/actions/workflows/deploy-pages.yml)
-[![CI Test Suite](https://github.com/shiwa/PDF-Docs-Converter/actions/workflows/ci.yml/badge.svg)](https://github.com/shiwa/PDF-Docs-Converter/actions/workflows/ci.yml)
+[![Deploy to GitHub Pages](https://github.com/Shiwani-Thakur-Work/PDF-Docs-Converter/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/Shiwani-Thakur-Work/PDF-Docs-Converter/actions/workflows/deploy-pages.yml)
+[![CI Test Suite](https://github.com/Shiwani-Thakur-Work/PDF-Docs-Converter/actions/workflows/ci.yml/badge.svg)](https://github.com/Shiwani-Thakur-Work/PDF-Docs-Converter/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 </div>
@@ -97,7 +97,7 @@ This project is built to live and deploy **exclusively within GitHub**:
 ### 1. Push to GitHub
 ```bash
 git branch -M main
-git remote add origin https://github.com/<YOUR-USERNAME>/PDF-Docs-Converter.git
+git remote add origin https://github.com/Shiwani-Thakur-Work/PDF-Docs-Converter.git
 git push -u origin main
 ```
 
@@ -105,13 +105,14 @@ git push -u origin main
 The included [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) workflow deploys the website automatically:
 1. In your GitHub repository, go to **Settings** ➔ **Pages**.
 2. Under **Build and deployment** ➔ **Source**, select **GitHub Actions**.
-3. Push to `main`! Your tool will be live at `https://<YOUR-USERNAME>.github.io/PDF-Docs-Converter/`.
+3. Push to `main`! Your tool will be live at:
+   `https://Shiwani-Thakur-Work.github.io/PDF-Docs-Converter/`
    - *Note:* On GitHub Pages, the frontend automatically runs PDF Merge and Split **directly in the client's browser** via client-side WebAssembly/PDF-lib with zero server required, and connects to the local server for heavy DOCX conversion.
 
 ### 3. Container Hosting (GitHub Container Registry - GHCR)
 The included [`.github/workflows/docker-publish.yml`](./.github/workflows/docker-publish.yml) builds the full backend container and hosts it on GitHub Packages:
 ```bash
-docker run -p 8000:8000 ghcr.io/<YOUR-USERNAME>/pdf-docs-converter:latest
+docker run -p 8000:8000 ghcr.io/shiwani-thakur-work/pdf-docs-converter:latest
 ```
 
 ---
