@@ -52,25 +52,49 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentDownloadUrl = null;   // Active Blob object URL for memory cleanup
   let backendAvailable = false;    // Whether local Python FastAPI server is active
 
+  let apiBase = "";
+
   // =========================================================================
   // Server Health Probe & Engine Auto-Detection
   // =========================================================================
-  fetch("/api/health")
-    .then(r => r.json())
-    .then(data => {
-      if (data.status === "healthy") {
+  async function detectBackend() {
+    // 1. Try origin relative /api/health
+    try {
+      const res = await fetch("/api/health");
+      if (res.ok) {
+        const data = await res.json();
         backendAvailable = true;
-        const engineLabel = data.engines.docx2pdf_libreoffice === "available"
-          ? "LibreOffice & pdf2docx Ready"
-          : "pdf2docx & ReportLab Ready";
-        engineStatusBadge.querySelector(".status-text").textContent = engineLabel;
+        apiBase = "";
+        updateEngineBadge(data);
+        return;
       }
-    })
-    .catch(() => {
-      // Running statically (e.g., GitHub Pages)
-      backendAvailable = false;
-      engineStatusBadge.querySelector(".status-text").textContent = "Browser Engine Ready";
-    });
+    } catch (_) {}
+
+    // 2. If running on GitHub Pages, check if local engine http://127.0.0.1:8000 is running
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/health");
+      if (res.ok) {
+        const data = await res.json();
+        backendAvailable = true;
+        apiBase = "http://127.0.0.1:8000";
+        updateEngineBadge(data);
+        return;
+      }
+    } catch (_) {}
+
+    // 3. Fallback to client-side browser mode
+    backendAvailable = false;
+    engineStatusBadge.querySelector(".status-text").textContent = "Browser Ready";
+  }
+
+  function updateEngineBadge(data) {
+    const engineLabel = data.engines.docx2pdf_libreoffice === "available"
+      ? "LibreOffice & pdf2docx Ready"
+      : "pdf2docx Ready";
+    engineStatusBadge.querySelector(".status-text").textContent = engineLabel;
+  }
+
+  detectBackend();
 
   // =========================================================================
   // Tool Modes Configuration Map
@@ -355,14 +379,14 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("file", file);
 
       if (targetFormat === "docx" || ext === "pdf") {
-        endpoint = "/api/convert/pdf-to-docx";
+        endpoint = `${apiBase}/api/convert/pdf-to-docx`;
       } else {
-        endpoint = "/api/convert/docx-to-pdf";
+        endpoint = `${apiBase}/api/convert/docx-to-pdf`;
       }
     } else if (currentMode === "compress") {
       formData.append("file", stagedFiles[0]);
       formData.append("level", "medium");
-      endpoint = "/api/tools/compress-pdf";
+      endpoint = `${apiBase}/api/tools/compress-pdf`;
     } else if (currentMode === "merge") {
       if (stagedFiles.length < 2) {
         showError("Please select at least 2 PDF files to merge.");
@@ -371,7 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       stagedFiles.forEach(f => formData.append("files", f));
-      endpoint = "/api/tools/merge-pdf";
+      endpoint = `${apiBase}/api/tools/merge-pdf`;
     } else if (currentMode === "split") {
       const pages = splitPagesInput.value.trim();
       if (!pages) {
@@ -382,7 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       formData.append("file", stagedFiles[0]);
       formData.append("pages", pages);
-      endpoint = "/api/tools/split-pdf";
+      endpoint = `${apiBase}/api/tools/split-pdf`;
     }
 
     // Perform upload via XMLHttpRequest to measure network progress

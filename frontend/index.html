@@ -1,191 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Basic Metadata -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DocFlow — Ultra-Fast PDF & DOCX Converter</title>
-  <meta name="description" content="High-fidelity, zero-glitch document converter suite. Convert PDF to DOCX and DOCX to PDF with complete layout preservation. 100% private with zero file retention.">
-  <meta name="keywords" content="pdf to docx, docx to pdf, word to pdf, pdf converter, merge pdf, split pdf, compress pdf, client-side converter">
+  <title>DocFlow — PDF & DOCX Converter</title>
+  <meta name="description" content="Sleek, fast, and private document converter. Convert PDF to editable Word (DOCX) and Word to PDF with layout preservation.">
 
-  <!-- Favicons & Touch Icons -->
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  <link rel="icon" type="image/png" href="/assets/logo.png">
-  <link rel="apple-touch-icon" href="/assets/logo.png">
+  <!-- Favicons (Relative paths for GitHub Pages & Local compatibility) -->
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="icon" type="image/png" href="./assets/logo.png">
+  <link rel="apple-touch-icon" href="./assets/logo.png">
 
-  <!-- Open Graph / Facebook Meta Tags -->
+  <!-- Open Graph Meta Tags -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="DocFlow — High-Fidelity PDF & DOCX Converter">
-  <meta property="og:description" content="Convert PDF to editable Word (DOCX) and Word to PDF with 100% layout and table preservation. Private, ultra-fast, and open-source.">
-  <meta property="og:image" content="/assets/og-image.jpg">
-  <meta property="og:image:width" content="1024">
-  <meta property="og:image:height" content="1024">
-
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DocFlow — High-Fidelity PDF & DOCX Converter">
-  <meta name="twitter:description" content="Convert PDF to editable Word (DOCX) and Word to PDF with 100% layout and table preservation.">
-  <meta name="twitter:image" content="/assets/og-image.jpg">
-
-  <!-- Modern Typography (Inter & Outfit via Google Fonts) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <meta property="og:title" content="DocFlow — PDF & DOCX Converter">
+  <meta property="og:description" content="High-fidelity, private PDF to DOCX and DOCX to PDF converter.">
+  <meta property="og:image" content="./assets/og-image.jpg">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
 
-  <!-- Client-Side PDF Engine (Enables 100% browser-native PDF Merge/Split on GitHub Pages) -->
+  <!-- Embedded Core CSS (Guarantees zero unstyled flicker on any static host) -->
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --btn-primary-bg: #0f172a;
+      --btn-primary-text: #ffffff;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .app-container { width: 100%; max-width: 580px; display: flex; flex-direction: column; gap: 16px; }
+    .hidden { display: none !important; }
+  </style>
+
+  <!-- Client-Side PDF Engine (Browser-native PDF merge & split for GitHub Pages) -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
 </head>
 <body>
-  <!-- Ambient background glow elements -->
-  <div class="glow-orb orb-1"></div>
-  <div class="glow-orb orb-2"></div>
-
   <div class="app-container">
-    <!-- Header Section -->
+    <!-- Clean Minimalist Header -->
     <header class="app-header">
       <div class="logo-group">
-        <!-- Brand Mark Icon -->
         <div class="logo-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
             <line x1="16" y1="13" x2="8" y2="13"></line>
             <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
         </div>
         <div class="logo-text">
           <h1>DocFlow</h1>
-          <span class="tagline">High-Fidelity Document Suite</span>
         </div>
       </div>
 
-      <!-- Engine Readiness & Health Indicator -->
       <div class="engine-badge" id="engineStatusBadge" title="Engine Status">
         <span class="status-dot"></span>
-        <span class="status-text">Engines Ready</span>
+        <span class="status-text">Ready</span>
       </div>
     </header>
 
-    <!-- Main Navigation Tabs -->
+    <!-- Navigation Tabs -->
     <nav class="nav-tabs" role="tablist">
-      <!-- Tab: PDF ⇄ DOCX Converter -->
       <button class="tab-btn active" id="tabConvert" data-mode="convert" role="tab" aria-selected="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="17 1 21 5 17 9"></polyline>
-          <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-          <polyline points="7 23 3 19 7 15"></polyline>
-          <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-        </svg>
         <span>PDF ⇄ DOCX</span>
       </button>
-
-      <!-- Tab: Compress PDF -->
       <button class="tab-btn" id="tabCompress" data-mode="compress" role="tab" aria-selected="false">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="4 14 10 14 10 20"></polyline>
-          <polyline points="20 10 14 10 14 4"></polyline>
-          <line x1="14" y1="10" x2="21" y2="3"></line>
-          <line x1="3" y1="21" x2="10" y2="14"></line>
-        </svg>
-        <span>Compress PDF</span>
+        <span>Compress</span>
       </button>
-
-      <!-- Tab: Merge PDFs -->
       <button class="tab-btn" id="tabMerge" data-mode="merge" role="tab" aria-selected="false">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="8" y="2" width="13" height="15" rx="2"></rect>
-          <path d="M4 6v14a2 2 0 0 0 2 2h12"></path>
-        </svg>
-        <span>Merge PDFs</span>
+        <span>Merge</span>
       </button>
-
-      <!-- Tab: Split PDF -->
       <button class="tab-btn" id="tabSplit" data-mode="split" role="tab" aria-selected="false">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="6" cy="6" r="3"></circle>
-          <circle cx="6" cy="18" r="3"></circle>
-          <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
-          <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
-          <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
-        </svg>
-        <span>Split PDF</span>
+        <span>Split</span>
       </button>
     </nav>
 
     <!-- Main Workspace Card -->
     <main class="card main-card">
-      <!-- Section Title & Description -->
       <div class="card-header">
         <h2 id="modeTitle">PDF ⇄ DOCX Converter</h2>
-        <p id="modeDesc">Convert PDF to editable Word or DOCX to PDF with 100% layout and table fidelity.</p>
+        <p id="modeDesc">Convert PDF to editable Word or DOCX to PDF with high fidelity.</p>
       </div>
 
       <!-- Drag & Drop Zone -->
       <div class="dropzone" id="dropzone">
         <input type="file" id="fileInput" class="file-input" accept=".pdf,.docx,.doc">
 
-        <!-- Initial Upload Prompt -->
         <div class="dropzone-content" id="dropzonePrompt">
           <div class="upload-icon-pulse">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="17 8 12 3 7 8"></polyline>
               <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
           </div>
-          <p class="dropzone-text"><strong>Drag & drop your file here</strong> or <span class="browse-link">browse</span></p>
+          <p class="dropzone-text"><strong>Drop your document here</strong> or <span class="browse-link">browse</span></p>
           <div class="supported-formats" id="supportedFormatsBadge">
             <span class="badge">PDF</span>
             <span class="badge">DOCX</span>
-            <span class="badge">DOC</span>
           </div>
         </div>
 
-        <!-- Staged File Preview Card (Displayed when a file is selected) -->
+        <!-- Staged File Card -->
         <div class="staged-file-card hidden" id="stagedFileCard">
           <div class="file-meta">
             <div class="file-icon" id="fileTypeIcon">📄</div>
             <div class="file-details">
-              <span class="filename" id="stagedFileName">contract.pdf</span>
-              <span class="filesize" id="stagedFileSize">1.2 MB</span>
+              <span class="filename" id="stagedFileName">document.pdf</span>
+              <span class="filesize" id="stagedFileSize">0 KB</span>
             </div>
           </div>
           <button type="button" class="btn-clear" id="btnClearFile" title="Remove file">✕</button>
         </div>
       </div>
 
-      <!-- Split Range Input (Visible only in Split mode) -->
+      <!-- Split Range Input -->
       <div class="custom-controls hidden" id="splitControls">
-        <label for="splitPagesInput">Page Range to Extract:</label>
-        <input type="text" id="splitPagesInput" placeholder="e.g. 1-3, 5, 8" class="text-input">
-        <span class="input-hint">Specify individual pages (e.g. 2, 4) or ranges (e.g. 1-5).</span>
+        <label for="splitPagesInput">Pages to Extract:</label>
+        <input type="text" id="splitPagesInput" placeholder="e.g. 1-3, 5" class="text-input">
+        <span class="input-hint">Specify pages (e.g. 1, 3) or ranges (e.g. 1-4).</span>
       </div>
 
-      <!-- Target Format Selector (Visible only in Convert mode) -->
+      <!-- Target Format Selector -->
       <div class="conversion-target-bar" id="targetBar">
-        <span class="target-label">Target Format:</span>
+        <span class="target-label">Target format:</span>
         <div class="pill-group" id="targetPillGroup">
           <button type="button" class="pill active" data-target="docx" id="btnTargetDocx">Word (.docx)</button>
-          <button type="button" class="pill" data-target="pdf" id="btnTargetPdf">PDF Document (.pdf)</button>
+          <button type="button" class="pill" data-target="pdf" id="btnTargetPdf">PDF (.pdf)</button>
         </div>
       </div>
 
-      <!-- Primary Action Execution Button -->
+      <!-- Action Button -->
       <div class="action-row">
         <button type="button" class="btn-primary" id="btnProcess" disabled>
-          <span class="btn-icon">⚡</span>
-          <span class="btn-text" id="btnProcessText">Convert File</span>
+          <span class="btn-text" id="btnProcessText">Convert Document</span>
         </button>
       </div>
 
-      <!-- Real-Time Progress Bar & Status Text -->
+      <!-- Progress Bar -->
       <div class="progress-section hidden" id="progressSection">
         <div class="progress-header">
-          <span class="progress-status" id="progressStatus">Uploading file...</span>
+          <span class="progress-status" id="progressStatus">Uploading...</span>
           <span class="progress-percent" id="progressPercent">0%</span>
         </div>
         <div class="progress-bar-track">
@@ -193,45 +167,39 @@
         </div>
       </div>
 
-      <!-- Completion & Instant Download Card -->
+      <!-- Success Result -->
       <div class="result-card hidden" id="resultCard">
         <div class="success-icon">✓</div>
         <div class="result-info">
-          <h3>Conversion Completed!</h3>
-          <p id="resultDetails">Your high-fidelity document is ready for download.</p>
+          <h3>Conversion Completed</h3>
+          <p id="resultDetails">Your document is ready for download.</p>
         </div>
         <div class="result-actions">
-          <a href="#" id="btnDownload" class="btn-download" download>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <span>Download Document</span>
-          </a>
+          <a href="#" id="btnDownload" class="btn-download" download>Download File</a>
           <button type="button" class="btn-secondary" id="btnReset">Convert Another</button>
         </div>
       </div>
 
-      <!-- Error Notification Banner -->
+      <!-- Error Alert -->
       <div class="error-banner hidden" id="errorBanner">
         <span class="error-icon">⚠️</span>
         <span class="error-message" id="errorMessage">An error occurred during conversion.</span>
       </div>
     </main>
 
-    <!-- Footer Privacy & Security Guarantee -->
+    <!-- Clean Minimalist Footer -->
     <footer class="app-footer">
       <div class="privacy-notice">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </svg>
-        <span>Zero Data Retention — Files are processed in ephemeral sandboxes and purged immediately.</span>
+        <span>100% Private — Ephemeral processing with zero file retention</span>
       </div>
     </footer>
   </div>
 
-  <script src="/js/app.js"></script>
+  <!-- App Logic (Relative path) -->
+  <script src="./js/app.js"></script>
 </body>
 </html>
