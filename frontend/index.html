@@ -1,18 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Basic Metadata -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DocFlow — Ultra-Fast PDF & DOCX Converter</title>
-  <meta name="description" content="High-fidelity, zero-glitch bi-directional document converter. Convert PDF to DOCX and DOCX to PDF with layout preservation.">
-  
-  <!-- Modern Google Fonts -->
+  <meta name="description" content="High-fidelity, zero-glitch document converter suite. Convert PDF to DOCX and DOCX to PDF with complete layout preservation. 100% private with zero file retention.">
+  <meta name="keywords" content="pdf to docx, docx to pdf, word to pdf, pdf converter, merge pdf, split pdf, compress pdf, client-side converter">
+
+  <!-- Favicons & Touch Icons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  <link rel="apple-touch-icon" href="/assets/logo.png">
+
+  <!-- Open Graph / Facebook Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DocFlow — High-Fidelity PDF & DOCX Converter">
+  <meta property="og:description" content="Convert PDF to editable Word (DOCX) and Word to PDF with 100% layout and table preservation. Private, ultra-fast, and open-source.">
+  <meta property="og:image" content="/assets/og-image.jpg">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="1024">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DocFlow — High-Fidelity PDF & DOCX Converter">
+  <meta name="twitter:description" content="Convert PDF to editable Word (DOCX) and Word to PDF with 100% layout and table preservation.">
+  <meta name="twitter:image" content="/assets/og-image.jpg">
+
+  <!-- Modern Typography (Inter & Outfit via Google Fonts) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-  
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Client-Side PDF Engine (Enables 100% browser-native PDF Merge/Split on GitHub Pages) -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
 </head>
 <body>
   <!-- Ambient background glow elements -->
@@ -20,9 +44,10 @@
   <div class="glow-orb orb-2"></div>
 
   <div class="app-container">
-    <!-- Header -->
+    <!-- Header Section -->
     <header class="app-header">
       <div class="logo-group">
+        <!-- Brand Mark Icon -->
         <div class="logo-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -38,7 +63,8 @@
         </div>
       </div>
 
-      <div class="engine-badge" id="engineStatusBadge" title="Backend Engine Status">
+      <!-- Engine Readiness & Health Indicator -->
+      <div class="engine-badge" id="engineStatusBadge" title="Engine Status">
         <span class="status-dot"></span>
         <span class="status-text">Engines Ready</span>
       </div>
@@ -46,6 +72,7 @@
 
     <!-- Main Navigation Tabs -->
     <nav class="nav-tabs" role="tablist">
+      <!-- Tab: PDF ⇄ DOCX Converter -->
       <button class="tab-btn active" id="tabConvert" data-mode="convert" role="tab" aria-selected="true">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="17 1 21 5 17 9"></polyline>
@@ -56,6 +83,7 @@
         <span>PDF ⇄ DOCX</span>
       </button>
 
+      <!-- Tab: Compress PDF -->
       <button class="tab-btn" id="tabCompress" data-mode="compress" role="tab" aria-selected="false">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="4 14 10 14 10 20"></polyline>
@@ -66,6 +94,7 @@
         <span>Compress PDF</span>
       </button>
 
+      <!-- Tab: Merge PDFs -->
       <button class="tab-btn" id="tabMerge" data-mode="merge" role="tab" aria-selected="false">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="8" y="2" width="13" height="15" rx="2"></rect>
@@ -74,6 +103,7 @@
         <span>Merge PDFs</span>
       </button>
 
+      <!-- Tab: Split PDF -->
       <button class="tab-btn" id="tabSplit" data-mode="split" role="tab" aria-selected="false">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="6" cy="6" r="3"></circle>
@@ -97,7 +127,8 @@
       <!-- Drag & Drop Zone -->
       <div class="dropzone" id="dropzone">
         <input type="file" id="fileInput" class="file-input" accept=".pdf,.docx,.doc">
-        
+
+        <!-- Initial Upload Prompt -->
         <div class="dropzone-content" id="dropzonePrompt">
           <div class="upload-icon-pulse">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -114,7 +145,7 @@
           </div>
         </div>
 
-        <!-- Staged File Preview Card -->
+        <!-- Staged File Preview Card (Displayed when a file is selected) -->
         <div class="staged-file-card hidden" id="stagedFileCard">
           <div class="file-meta">
             <div class="file-icon" id="fileTypeIcon">📄</div>
@@ -127,14 +158,14 @@
         </div>
       </div>
 
-      <!-- Mode-Specific Controls -->
+      <!-- Split Range Input (Visible only in Split mode) -->
       <div class="custom-controls hidden" id="splitControls">
         <label for="splitPagesInput">Page Range to Extract:</label>
         <input type="text" id="splitPagesInput" placeholder="e.g. 1-3, 5, 8" class="text-input">
         <span class="input-hint">Specify individual pages (e.g. 2, 4) or ranges (e.g. 1-5).</span>
       </div>
 
-      <!-- Direction / Target Selector (For Convert Mode) -->
+      <!-- Target Format Selector (Visible only in Convert mode) -->
       <div class="conversion-target-bar" id="targetBar">
         <span class="target-label">Target Format:</span>
         <div class="pill-group" id="targetPillGroup">
@@ -143,7 +174,7 @@
         </div>
       </div>
 
-      <!-- Action Button -->
+      <!-- Primary Action Execution Button -->
       <div class="action-row">
         <button type="button" class="btn-primary" id="btnProcess" disabled>
           <span class="btn-icon">⚡</span>
@@ -151,7 +182,7 @@
         </button>
       </div>
 
-      <!-- Progress Section -->
+      <!-- Real-Time Progress Bar & Status Text -->
       <div class="progress-section hidden" id="progressSection">
         <div class="progress-header">
           <span class="progress-status" id="progressStatus">Uploading file...</span>
@@ -162,7 +193,7 @@
         </div>
       </div>
 
-      <!-- Result Card -->
+      <!-- Completion & Instant Download Card -->
       <div class="result-card hidden" id="resultCard">
         <div class="success-icon">✓</div>
         <div class="result-info">
@@ -182,14 +213,14 @@
         </div>
       </div>
 
-      <!-- Error Alert Box -->
+      <!-- Error Notification Banner -->
       <div class="error-banner hidden" id="errorBanner">
         <span class="error-icon">⚠️</span>
         <span class="error-message" id="errorMessage">An error occurred during conversion.</span>
       </div>
     </main>
 
-    <!-- Footer Security & Privacy Guarantee -->
+    <!-- Footer Privacy & Security Guarantee -->
     <footer class="app-footer">
       <div class="privacy-notice">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

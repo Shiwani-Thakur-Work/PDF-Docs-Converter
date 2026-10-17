@@ -1,10 +1,21 @@
+"""
+PDF Manipulation Utilities (Merge & Split)
+===========================================
+High-speed PDF page assembly and extraction routines powered by PyMuPDF (MuPDF C engine).
+Operates directly on binary page trees for near-instant execution without re-encoding artifacts.
+"""
+
 import asyncio
 import fitz  # PyMuPDF
 from pathlib import Path
 from backend.app.core.exceptions import ConversionError
 
+
 async def merge_pdfs(input_paths: list[Path], output_path: Path) -> Path:
-    """Merges multiple PDF documents into a single unified PDF."""
+    """
+    Merges multiple PDF documents into a single sequential PDF.
+    Preserves vector graphics, annotations, and original page geometry.
+    """
     def _execute():
         try:
             merged_doc = fitz.open()
@@ -15,7 +26,7 @@ async def merge_pdfs(input_paths: list[Path], output_path: Path) -> Path:
             merged_doc.save(str(output_path))
             merged_doc.close()
         except Exception as e:
-            raise ConversionError(f"PDF merge failed: {str(e)}")
+            raise ConversionError(f"PDF merge operation failed: {str(e)}")
 
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, _execute)
@@ -25,11 +36,15 @@ async def merge_pdfs(input_paths: list[Path], output_path: Path) -> Path:
 
     return output_path
 
+
 async def split_pdf(input_path: Path, output_path: Path, page_range: str) -> Path:
     """
-    Extracts specified pages from a PDF.
-    Supports formats like '1-3', '1,3,5', or '2'.
-    Page numbering is 1-indexed for the user.
+    Extracts designated pages from a PDF document into a new PDF.
+    
+    Parameters:
+        input_path: Path to source PDF.
+        output_path: Destination path for extracted pages.
+        page_range: Human-readable 1-indexed page specification (e.g., '1-3, 5, 8').
     """
     def _execute():
         try:
@@ -37,7 +52,7 @@ async def split_pdf(input_path: Path, output_path: Path, page_range: str) -> Pat
             total_pages = len(doc)
             selected_pages = []
 
-            # Parse page_range string
+            # Parse user range syntax (supports commas and hyphens, e.g. "1-4, 7, 10")
             parts = [p.strip() for p in page_range.split(",") if p.strip()]
             for part in parts:
                 if "-" in part:
@@ -45,7 +60,7 @@ async def split_pdf(input_path: Path, output_path: Path, page_range: str) -> Pat
                     start = max(1, int(start_s.strip()))
                     end = min(total_pages, int(end_s.strip()))
                     for p_num in range(start, end + 1):
-                        selected_pages.append(p_num - 1)
+                        selected_pages.append(p_num - 1)  # Convert to 0-indexed internal page numbers
                 else:
                     p_num = int(part)
                     if 1 <= p_num <= total_pages:
@@ -54,9 +69,10 @@ async def split_pdf(input_path: Path, output_path: Path, page_range: str) -> Pat
             if not selected_pages:
                 raise ConversionError(f"No valid pages found in range '{page_range}'. Document has {total_pages} pages.")
 
-            # Deduplicate while preserving order
+            # Deduplicate page list while preserving user-defined ordering
             selected_pages = list(dict.fromkeys(selected_pages))
 
+            # Assemble target document from selected page indices
             split_doc = fitz.open()
             for p in selected_pages:
                 split_doc.insert_pdf(doc, from_page=p, to_page=p)
@@ -67,12 +83,12 @@ async def split_pdf(input_path: Path, output_path: Path, page_range: str) -> Pat
         except ConversionError:
             raise
         except Exception as e:
-            raise ConversionError(f"PDF split failed: {str(e)}")
+            raise ConversionError(f"PDF extraction failed: {str(e)}")
 
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, _execute)
 
     if not output_path.exists() or output_path.stat().st_size == 0:
-        raise ConversionError("Split PDF was not generated.")
+        raise ConversionError("Extracted PDF could not be generated.")
 
     return output_path

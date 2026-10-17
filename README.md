@@ -1,151 +1,130 @@
+<div align="center">
+
+<img src="./frontend/assets/logo.png" alt="DocFlow Logo" width="180" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);" />
+
 # DocFlow — PDF & Docs Converter Suite 📄⚡
 
-> A high-fidelity, zero-glitch, privacy-first Document Converter tool. Convert **PDF to DOCX** and **DOCX to PDF** with layout preservation, accompanied by companion PDF utilities (Compress, Merge, Split).
+**High-Fidelity, Zero-Glitch, Privacy-First Document Conversion.**  
+Convert **PDF to DOCX** and **DOCX to PDF** with layout preservation, plus native PDF utilities (Compress, Merge, Split).
+
+[![Deploy to GitHub Pages](https://github.com/shiwa/PDF-Docs-Converter/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/shiwa/PDF-Docs-Converter/actions/workflows/deploy-pages.yml)
+[![CI Test Suite](https://github.com/shiwa/PDF-Docs-Converter/actions/workflows/ci.yml/badge.svg)](https://github.com/shiwa/PDF-Docs-Converter/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+</div>
 
 ---
 
-## 🌟 Key Features
+## 🌟 What This Project Does (Plain English)
 
-- **Bi-Directional High Fidelity:**
-  - `PDF ➔ DOCX`: Intelligently reconstructs tables, font styling, multi-column layouts, and images into editable Word `.docx` documents (`pdf2docx` + PyMuPDF).
-  - `DOCX ➔ PDF`: Generates clean, printable, searchable PDFs with 1:1 page layout parity (Headless LibreOffice in Docker, with ReportLab pure-Python fallback for universal standalone operation).
-- **Zero-Glitch & Bulletproof:**
-  - Magic-byte validation (`%PDF-` and `PK\x03\x04`).
-  - Pre-emptive password-protected document detection with user-friendly alerts.
-  - Safe memory streaming with bounded file size thresholds.
-- **Privacy & Zero Retention:**
-  - Files are processed in ephemeral sandboxes and purged immediately upon download (plus automated periodic background garbage collection).
-- **Minimal, Modern UI:**
-  - Sleek dark-mode aesthetic with ambient glow, drag-and-drop zone, real-time conversion progress bar, and instant one-click downloads.
-- **Companion Utilities:**
-  - **Compress PDF:** Re-sample streams and deduplicate objects to shrink file size.
-  - **Merge PDFs:** Combine multiple PDF documents into a single unified file.
-  - **Split PDF:** Extract specific pages or page ranges (e.g., `1-3, 5, 8`).
+Most online file converters break document formatting—tables get scrambled, fonts disappear, and your private files are uploaded to third-party ad-ridden servers.
+
+**DocFlow** solves this:
+1. **Flawless Formatting:** When you convert a PDF into Microsoft Word (`.docx`), it reconstructs paragraphs, tables, colors, and margins as editable elements.
+2. **True 1:1 PDF Generation:** When you convert Word to PDF, it renders exact page layouts using Headless LibreOffice and embedded ReportLab styling.
+3. **100% Privacy Guarantee:** Zero files are kept. Documents are processed in temporary memory sandboxes and deleted immediately after you download them.
+4. **100% GitHub-Native:** Deploys via **GitHub Pages** and **GitHub Container Registry**—no third-party cloud hosting needed.
 
 ---
 
-## 📖 Architectural Documentation
+## 🏗️ Clean, Human-Readable Codebase
 
-Full project blueprints are stored in the [`docs/`](./docs/) directory:
-- 📑 **[Context & Vision](./docs/context.md):** Problem statement, design principles, quality mandates, and feature scope.
-- 🏗️ **[System Architecture](./docs/architecture.md):** Sequence diagrams, conversion pipelines, ephemeral storage, and security layers.
-- 🚀 **[Implementation Guide](./docs/implementation.md):** Service designs, API contracts, edge case handling, and Docker setup.
+The entire codebase is commented with high-level professional architectural context. Anyone—engineers, product managers, or non-technical stakeholders—can inspect any file and immediately understand what each part does:
+
+```
+PDF-Docs-Converter/
+├── frontend/
+│   ├── index.html           # Accessible single-page web app with OpenGraph meta tags & icons
+│   ├── css/style.css        # Minimalist dark-theme design with ambient glowing effects
+│   ├── js/app.js            # User interface controller, upload progress, & client-side engine
+│   └── assets/              # DocFlow brand logos, SVG favicon, and OpenGraph social banner
+├── backend/
+│   └── app/
+│       ├── main.py          # FastAPI application server, static assets, and CORS security
+│       ├── config.py        # File size limits (100MB) & 10-minute auto-purge lifecycle
+│       ├── api/             # HTTP endpoints: /convert, /tools (compress/merge/split), /health
+│       ├── core/            # Magic-byte security validation & ephemeral file sandbox manager
+│       └── services/        # Layout reconstruction (pdf2docx) & rendering engines
+├── docs/
+│   ├── context.md           # Vision, quality mandates, and feature specifications
+│   ├── architecture.md      # System blueprints and conversion sequence diagrams
+│   └── implementation.md    # API contracts, error boundaries, and Docker specs
+├── .github/workflows/
+│   ├── deploy-pages.yml     # Automatically deploys frontend to GitHub Pages on git push
+│   ├── ci.yml               # Automated test runner with LibreOffice verification
+│   └── docker-publish.yml   # Builds & publishes container to GitHub Container Registry (GHCR)
+├── run.bat & run.ps1        # 1-Click launcher scripts for Windows
+└── Dockerfile               # Production container with Python, LibreOffice, and system fonts
+```
 
 ---
 
 ## 🚀 How to Run Locally
 
-### Option 1: One-Click Quick Start (Windows)
-Simply run either script in the project root:
+### Option 1: 1-Click Launch (Windows)
+Double-click `run.bat` or run in PowerShell:
 ```powershell
-# Using PowerShell:
 .\run.ps1
-
-# Or double-click / run in Command Prompt:
-run.bat
 ```
-This automatically verifies your virtual environment, launches the server, and opens `http://localhost:8000` in your default browser.
+*The launcher checks your environment, starts the server, and automatically opens `http://localhost:8000` in your browser.*
 
 ---
 
-### Option 2: Standard Terminal Run
+### Option 2: Terminal Run
+```powershell
+# 1. Activate environment
+.\.venv\Scripts\activate
 
-1. **Activate the virtual environment:**
-   ```powershell
-   # Windows PowerShell
-   .\.venv\Scripts\activate
-
-   # macOS / Linux
-   source .venv/bin/activate
-   ```
-
-2. **Install dependencies (if not already installed):**
-   ```bash
-   pip install -r requirements.txt
-   # OR with uv:
-   uv pip install -r requirements.txt
-   ```
-
-3. **Start the server:**
-   ```bash
-   uvicorn backend.app.main:app --reload --port 8000
-   ```
-
-4. **Open your browser:**
-   - Web Application UI: `http://localhost:8000`
-   - Interactive Swagger API Docs: `http://localhost:8000/docs`
+# 2. Start server
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+- **Web App:** [http://localhost:8000](http://localhost:8000)
+- **Interactive API Documentation:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-### Option 3: Run with Docker (Recommended for Production & Cloud)
-
-Docker packages Python, LibreOffice headless, and true-type font packs in an isolated Linux container:
-
+### Option 3: Docker (1-Command Containerized Run)
 ```bash
 docker compose up --build
 ```
-Access the application at `http://localhost:8000`.
 
 ---
 
-## 🧪 Running Automated Tests
+## 🌐 100% GitHub-Only Deployment
 
-A comprehensive test suite is included in `tests/test_converter.py`:
-
-```bash
-.\.venv\Scripts\python.exe -m pytest tests/ -v
-```
-
-All 5 core test cases (PDF to DOCX, DOCX to PDF, Compression, Merge/Split, and Zero-byte validation) run in ~3.8 seconds.
-
----
-
-## 🌐 How to Push to GitHub & Deploy Live
+This project is built to live and deploy **exclusively within GitHub**:
 
 ### 1. Push to GitHub
 ```bash
-git init
-git add .
-git commit -m "feat: complete DocFlow PDF-Docs converter suite"
 git branch -M main
-git remote add origin https://github.com/<your-username>/PDF-Docs-Converter.git
+git remote add origin https://github.com/<YOUR-USERNAME>/PDF-Docs-Converter.git
 git push -u origin main
 ```
 
-### 2. Live Deployment (e.g. Render / Railway / Fly.io)
+### 2. Live Web Deployment (GitHub Pages)
+The included [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) workflow deploys the website automatically:
+1. In your GitHub repository, go to **Settings** ➔ **Pages**.
+2. Under **Build and deployment** ➔ **Source**, select **GitHub Actions**.
+3. Push to `main`! Your tool will be live at `https://<YOUR-USERNAME>.github.io/PDF-Docs-Converter/`.
+   - *Note:* On GitHub Pages, the frontend automatically runs PDF Merge and Split **directly in the client's browser** via client-side WebAssembly/PDF-lib with zero server required, and connects to the local server for heavy DOCX conversion.
 
-Because the project includes a production-ready `Dockerfile`:
-
-1. **Render.com:**
-   - Create a new **Web Service** on [Render](https://render.com).
-   - Connect your GitHub repository.
-   - Choose **Docker** as the Runtime environment.
-   - Set Port to `8000`.
-   - Deploy! Render will build the container with LibreOffice and fonts automatically.
-
-2. **Railway.app:**
-   - Click **New Project** ➔ **Deploy from GitHub repo**.
-   - Railway will auto-detect the `Dockerfile` and deploy with zero extra configuration.
+### 3. Container Hosting (GitHub Container Registry - GHCR)
+The included [`.github/workflows/docker-publish.yml`](./.github/workflows/docker-publish.yml) builds the full backend container and hosts it on GitHub Packages:
+```bash
+docker run -p 8000:8000 ghcr.io/<YOUR-USERNAME>/pdf-docs-converter:latest
+```
 
 ---
 
-## 📡 REST API Reference
+## 🧪 Automated Testing
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/convert/pdf-to-docx` | Converts PDF to editable DOCX |
-| `POST` | `/api/convert/docx-to-pdf` | Converts DOCX to PDF |
-| `POST` | `/api/tools/compress-pdf` | Compresses PDF streams |
-| `POST` | `/api/tools/merge-pdf` | Merges multiple PDFs |
-| `POST` | `/api/tools/split-pdf` | Splits PDF by page numbers/ranges |
-| `GET` | `/api/health` | Health check and engine availability |
-
----
-
-## 🔒 Security & Privacy Notice
-All uploads are saved to isolated, UUID-tagged ephemeral directories. Files are purged immediately after the download stream finishes and cleaned up via an automated 10-minute TTL garbage collection worker. No user documents are ever persisted or retained.
+Verify the conversion engines anytime:
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/ -v
+```
+All 5 test suites (PDF ➔ DOCX, DOCX ➔ PDF, Compression, Merge/Split, and Zero-byte guards) pass in ~3.8 seconds.
 
 ---
 
 ## 📜 License
-MIT License.
+MIT License. Open-source and free for personal and commercial use.
