@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  converter-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pdf-docs-converter:latest
+    container_name: pdf_docs_converter
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - MAX_FILE_SIZE_MB=100
+      - FILE_TTL_SECONDS=600
+    tmpfs:
+      - /tmp/pdf_docs_converter:size=512M,mode=1777

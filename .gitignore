@@ -1,0 +1,29 @@
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+.env
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+tests/test_scratch/
+
+# Application Temp Storage
+temp_conversions/
+/tmp/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
